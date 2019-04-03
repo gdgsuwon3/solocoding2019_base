@@ -1,1 +1,2 @@
-# 나 코딩한다 Baseline 프로젝트
+# solocoding2019_base
+Base Project for solocoding
