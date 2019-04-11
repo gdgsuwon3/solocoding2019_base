@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  intl: ^0.15.8
   flutter:
     sdk: flutter
   sqflite: ^1.1.0

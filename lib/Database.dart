@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:solocoding2019_base/models/Memo.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:intl/intl.dart';
 
 class DBProvider {
   DBProvider._();
@@ -26,10 +27,10 @@ class DBProvider {
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE Memo ("
-          "id INTEGER PRIMARY KEY,"
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "title TEXT,"
           "content TEXT,"
-          "createdAt BIT"
+          "createdAt TEXT"
           ")");
     });
   }
@@ -37,13 +38,16 @@ class DBProvider {
   newMemo(Memo newMemo) async {
     final db = await database;
     //get the biggest id in the table
-    var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Memo");
-    int id = table.first["id"];
+    // var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Memo");
+    // int id = table.first["id"];
     //insert to the table using the new id
+
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     var raw = await db.rawInsert(
-        "INSERT Into Memo (id,first_name,last_name,createdAt)"
-        " VALUES (?,?,?,?)",
-        [id, newMemo.title, newMemo.content, newMemo.createdAt]);
+        "INSERT Into Memo (title,content,createdAt)"
+        " VALUES (?,?,?)",
+        [newMemo.title, newMemo.content, formattedDate]);
     return raw;
   }
 
@@ -89,6 +93,8 @@ class DBProvider {
     var res = await db.query("Memo");
     List<Memo> list =
         res.isNotEmpty ? res.map((c) => Memo.fromMap(c)).toList() : [];
+    print("getAllMemos");
+    print(list);
     return list;
   }
 
