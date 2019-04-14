@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:solocoding2019_base/Database.dart';
-import 'package:solocoding2019_base/models/Memo.dart';
+import 'package:solocoding2019_base/models/memo.dart';
 
 class MemosBloc {
-  final _clientController = StreamController<List<Memo>>.broadcast();
+  final _memoController = StreamController<List<Memo>>.broadcast();
 
-  get clients => _clientController.stream;
+  get memos => _memoController.stream;
 
   dispose() {
-    _clientController.close();
+    _memoController.close();
   }
 
   getMemos() async {
-    _clientController.sink.add(await DBProvider.db.getAllMemos());
+    _memoController.sink.add(await DBProvider.db.getAllMemos());
   }
 
   MemosBloc() {
@@ -27,6 +27,11 @@ class MemosBloc {
 
   delete(int id) {
     DBProvider.db.deleteMemo(id);
+    getMemos();
+  }
+
+  update(Memo memo) {
+    DBProvider.db.updateMemo(memo);
     getMemos();
   }
 

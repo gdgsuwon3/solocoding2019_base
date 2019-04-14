@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:solocoding2019_base/models/Memo.dart';
+import 'package:solocoding2019_base/models/memo.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 
@@ -28,37 +28,34 @@ class DBProvider {
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE Memo ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-          "title TEXT,"
-          "content TEXT,"
-          "createdAt TEXT"
+          "title Text,"
+          "content Text,"
+          "updatedAt Text,"
+          "isDeleted Integer DEFAULT 0" 
           ")");
     });
   }
 
   newMemo(Memo newMemo) async {
     final db = await database;
-    //get the biggest id in the table
-    // var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Memo");
-    // int id = table.first["id"];
-    //insert to the table using the new id
 
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     var raw = await db.rawInsert(
-        "INSERT Into Memo (title,content,createdAt)"
+        "INSERT Into Memo (title,content,updatedAt)"
         " VALUES (?,?,?)",
-        [newMemo.title, newMemo.content, formattedDate]);
+        [newMemo.title == null ? 'untitle' : newMemo, newMemo.content == null ? '' : newMemo.content, formattedDate]);
     return raw;
   }
 
   blockOrUnblock(Memo memo) async {
     final db = await database;
-    Memo createdAt = Memo(
+    Memo updatedAt = Memo(
         id: memo.id,
         title: memo.title,
         content: memo.content,
-        createdAt: memo.createdAt);
-    var res = await db.update("Memo", createdAt.toMap(),
+        updatedAt: memo.updatedAt);
+    var res = await db.update("Memo", updatedAt.toMap(),
         where: "id = ?", whereArgs: [memo.id]);
     return res;
   }
@@ -67,6 +64,7 @@ class DBProvider {
     final db = await database;
     var res = await db.update("Memo", newMemo.toMap(),
         where: "id = ?", whereArgs: [newMemo.id]);
+
     return res;
   }
 
@@ -78,10 +76,7 @@ class DBProvider {
 
   Future<List<Memo>> getBlockedMemos() async {
     final db = await database;
-
-    print("works");
-    // var res = await db.rawQuery("SELECT * FROM Memo WHERE createdAt=1");
-    var res = await db.query("Memo", where: "createdAt = ? ", whereArgs: [1]);
+    var res = await db.query("Memo", where: "updatedAt = ? ", whereArgs: [1]);
 
     List<Memo> list =
         res.isNotEmpty ? res.map((c) => Memo.fromMap(c)).toList() : [];
@@ -93,8 +88,7 @@ class DBProvider {
     var res = await db.query("Memo");
     List<Memo> list =
         res.isNotEmpty ? res.map((c) => Memo.fromMap(c)).toList() : [];
-    print("getAllMemos");
-    print(list);
+
     return list;
   }
 

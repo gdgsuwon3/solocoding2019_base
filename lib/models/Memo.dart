@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 Memo memoFromJson(String str) {
   final jsonData = json.decode(str);
   return Memo.fromMap(jsonData);
@@ -11,35 +13,33 @@ String memoToJson(Memo data) {
 }
 
 class Memo {
+
   int id;
   String title;
   String content;
-  String createdAt;
   String updatedAt;
-  bool deleted;
+  int isDeleted;
 
   Memo(
       {this.id,
       this.title,
       this.content,
-      this.createdAt,
       this.updatedAt,
-      this.deleted});
+      this.isDeleted});
 
   factory Memo.fromMap(Map<String, dynamic> json) => new Memo(
         id: json["id"],
         title: json["title"],
         content: json["content"],
-        createdAt: json["createdAt"],
         updatedAt: json["updatedAt"],
+        isDeleted: json["isDeleted"]
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
         "title": title,
         "content": content,
-        "createdAt": createdAt,
         "updatedAt": updatedAt,
-        "deleted": deleted,
+        "isDeleted": isDeleted == null ? 0 : isDeleted,
       };
 }

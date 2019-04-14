@@ -1,9 +1,9 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=C:\flutter
-FLUTTER_APPLICATION_PATH=d:\Workspace\solocoding2019_base
-FLUTTER_TARGET=lib/main.dart
+FLUTTER_ROOT=/Users/yoonjaepark/development/flutter
+FLUTTER_APPLICATION_PATH=/Users/yoonjaepark/dev/solocoding2019_base
+FLUTTER_TARGET=/Users/yoonjaepark/dev/solocoding2019_base/lib/main.dart
 FLUTTER_BUILD_DIR=build
-SYMROOT=${SOURCE_ROOT}/../build\ios
-FLUTTER_FRAMEWORK_DIR=C:\flutter\bin\cache\artifacts\engine\ios
+SYMROOT=${SOURCE_ROOT}/../build/ios
+FLUTTER_FRAMEWORK_DIR=/Users/yoonjaepark/development/flutter/bin/cache/artifacts/engine/ios
 FLUTTER_BUILD_NAME=1.0.0
 FLUTTER_BUILD_NUMBER=1
