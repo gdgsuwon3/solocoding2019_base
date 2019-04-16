@@ -31,7 +31,7 @@ class DBProvider {
           "title Text,"
           "content Text,"
           "updatedAt Text,"
-          "isDeleted Integer DEFAULT 0" 
+          "isDeleted Integer DEFAULT 0"
           ")");
     });
   }
@@ -40,11 +40,15 @@ class DBProvider {
     final db = await database;
 
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+    String formattedDate = now.toIso8601String();
     var raw = await db.rawInsert(
         "INSERT Into Memo (title,content,updatedAt)"
         " VALUES (?,?,?)",
-        [newMemo.title == null ? 'untitle' : newMemo, newMemo.content == null ? '' : newMemo.content, formattedDate]);
+        [
+          newMemo.title == null ? 'untitle' : newMemo,
+          newMemo.content == null ? '' : newMemo.content,
+          formattedDate
+        ]);
     return raw;
   }
 
@@ -62,6 +66,9 @@ class DBProvider {
 
   updateMemo(Memo newMemo) async {
     final db = await database;
+    DateTime now = DateTime.now();
+    String formattedDate = now.toIso8601String();
+    newMemo.updatedAt = formattedDate;
     var res = await db.update("Memo", newMemo.toMap(),
         where: "id = ?", whereArgs: [newMemo.id]);
 
@@ -86,6 +93,16 @@ class DBProvider {
   Future<List<Memo>> getAllMemos() async {
     final db = await database;
     var res = await db.query("Memo");
+    List<Memo> list =
+        res.isNotEmpty ? res.map((c) => Memo.fromMap(c)).toList() : [];
+
+    return list;
+  }
+
+  Future<List<Memo>> searchMemo(String text) async {
+    final db = await database;
+    var res = await db.rawQuery(
+        "SELECT * FROM Memo WHERE title LIKE '%${text}%' OR  content LIKE '%${text}%'");
     List<Memo> list =
         res.isNotEmpty ? res.map((c) => Memo.fromMap(c)).toList() : [];
 

@@ -8,42 +8,44 @@ class Detail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Memo memo = ModalRoute.of(context).settings.arguments;
-    final _controller = TextEditingController();
-    _controller.text = memo.content;
-
+    final _contentController = TextEditingController();
+    final _titleController = TextEditingController();
+    _contentController.text = memo.content;
+    _titleController.text = memo.title;
     return new Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: true,
-          //`true` if you want Flutter to automatically add Back Button when needed,
-          //or `false` if you want to force your own back button every where
-          title: Text('작성하기'),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => this.popPress(context, memo, _controller),
-          )),
-      body: new Container(
-        color: const Color(0xFF736AB7),
-        constraints: new BoxConstraints.expand(),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+            automaticallyImplyLeading: true,
+            //`true` if you want Flutter to automatically add Back Button when needed,
+            //or `false` if you want to force your own back button every where
+            title: Text('작성하기'),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => this.popPress(
+                  context, memo, _titleController, _contentController),
+            )),
+        body: new Column(
           children: <Widget>[
             new TextField(
-              controller: _controller,
+              controller: _titleController,
+              maxLines: null,
+              maxLengthEnforced: false,
+              keyboardType: TextInputType.multiline,
+            ),
+            new TextField(
+              controller: _contentController,
               maxLines: null,
               maxLengthEnforced: false,
               keyboardType: TextInputType.multiline,
             ),
           ],
-        ),
-      ),
-    );
+        ));
   }
 
-  popPress(context, Memo memo, _controller) async {
+  popPress(context, Memo memo, _titleController, _contentController) async {
     Memo newMemo = new Memo(
         id: memo.id,
-        title: memo.title,
-        content: _controller.text,
+        title: _titleController.text,
+        content: _contentController.text,
         updatedAt: memo.updatedAt);
     this.bloc.update(newMemo);
     Navigator.pop(context, false);

@@ -39,4 +39,8 @@ class MemosBloc {
     DBProvider.db.newMemo(client);
     getMemos();
   }
+
+  search(String text) async {
+    _memoController.sink.add(await DBProvider.db.searchMemo(text));
+  }
 }
