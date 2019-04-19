@@ -97,14 +97,13 @@ class _HomeState extends State<Home> {
           stream: bloc.memos,
           builder: (BuildContext context, AsyncSnapshot<List<Memo>> snapshot) {
             return ListView.builder(
-                itemCount: snapshot.data.length,
+                itemCount: snapshot.data == null ? 0 : snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   Memo item = snapshot.data[index];
                   var updatedAt = DateTime.parse(item.updatedAt);
                   var year = updatedAt.year.toString();
                   var month = updatedAt.month.toString();
                   var day = updatedAt.day.toString();
-
 
                   if (snapshot.hasData && this._searchText == "") {
                     return Dismissible(
